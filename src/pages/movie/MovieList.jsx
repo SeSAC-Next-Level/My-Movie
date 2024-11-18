@@ -1,8 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import genreApi from '../../api/genre/genreApi';
+import movieApi from '../../api/movie/movieApi';
+
+
+async function getGenre() {
+  const genre = await genreApi.getGenre()
+  console.log(genre);
+}
+
+
+async function getMovies() {
+  const movies = await movieApi.getNowPlaying()
+  console.log(movies);
+}
 export default function MovieList() {
+
   return (
     <div>
+      <div onClick={async () => await getMovies()}>MovieList</div>
       <div>
         <div style={{ display: "flex" }}>
           <h3>SF</h3>
