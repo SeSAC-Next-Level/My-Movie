@@ -9,7 +9,7 @@ async function getGenre() {
   const response = await genreApi.getGenre();
 
   // return response.genres.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-  return response.genres.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+  return response.genres;
 }
 
 async function getMovies() {
@@ -22,13 +22,10 @@ export default function MovieList() {
   const genreList = useSelector((state) => state.genre);
   const dispatch = useDispatch();
   useEffect(() => {
-    // 비동기와 동기가 같이 있어 순서보장이 되지 않음
-    // 때문에 상태 변경을 감지하면 동작하도록 나눔
-    // 함수 선언
     const setMovieAndGenre = async () => {
       if (!genreList.length) {
         const genres = await getGenre();
-
+        // store 수정
         dispatch(setGenre(genres));
       }
       if (!movieList.length) {
@@ -47,7 +44,7 @@ export default function MovieList() {
         // 기존의 데이터를 새로 갈아끼울 거임
         // 장르 별로 영화를 조합한 새로운 데이터
         const newItems = []
-        
+
         movieList.forEach(({ poster_path, title, id, genre_ids }) => {
           const movie = { poster_path, title, id };
           let item = newItems.find((i) => i.genre.id == genre_ids[0]);
@@ -66,6 +63,7 @@ export default function MovieList() {
               };
               newItems.push(item);
             }
+
           }
           // 있으면 아이템즈의 무비의 어레이에 영화 추가
           else {
@@ -76,25 +74,43 @@ export default function MovieList() {
               index = idx
               return movie.id === id
             })) {
-              newItems[index].movie.push(movie);
             }
+            newItems[index].movie.push(movie);
           }
         });
         setItems(newItems);
       }
     };
 
-    // 장르list.map(filter())
+
     updateItems();
     console.log(items);
   }, [genreList, movieList]);
+  /*   useEffect(() => {
+      // 장르list.map(filter())
+  
+      // 장르 하나 가져와서 영화 전체 순회
+      // return 장르.id === 영화.id
+      const newItems = genreList.map((genre) => {
+        const movie = movieList.filter(m => {
+          return m.genre_ids[0] == genre.id
+        })
+  
+        return { genre, movie }
+      });
+  
+      setItems(newItems);
+      console.log(newItems);
+      // console.log(items);
+    }, [genreList, movieList]);
+   */
   return (
     <div>
       <div onClick={async () => await getMovies()}>MovieList</div>
       {items.map(({ genre, movie }) => {
-
+        if (!movie.length) return null
         return (
-          <div>
+          <div key={genre.id}>
             <div style={{ display: 'flex' }}>
               <h3>{genre.name}</h3>
               <div>
@@ -107,7 +123,7 @@ export default function MovieList() {
             <div style={{ display: 'flex' }}>
               {movie.map(({ poster_path, title, id }) => {
                 return (
-                  <div style={{ boxSizing: 'content-box', margin: '10px' }}>
+                  <div key={id} style={{ boxSizing: 'content-box', margin: '10px' }}>
                     <div>{title}</div>
                     <Link to={id}>
                       <div>
