@@ -4,7 +4,7 @@ const initialState = {
   value: 0,
 }
 
-export const sampleSlice = createSlice({
+const sampleSlice = createSlice({
   name: 'sample',
   initialState,
   reducers: {
