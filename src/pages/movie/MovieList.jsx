@@ -43,36 +43,14 @@ export default function MovieList() {
   useEffect(() => {
     const updateItems = () => {
       if (genreList.length && movieList.length) {
-        //무비리스트 필터 걸어서 장르별로
-        // 무비리스트에 장르 뽑아서 집어너서
-
-
-        // genreList.map((genre) => {movielist에서 해당 gendre를 가지는 것들 필터링})
-
-        // 단, 하나도 없으면 없애기 (length에 대한 filter)
-
-        // movie list를 순회를 돌면서 하나하나 새로운 obj에 넣자
-        // 해당 movie에 genre에 대한 key가 있으면 그냥 넣고
-        // 해당 mvoie에 grne에 대한 key가 없으면 만들면서 넣고
-
-
-        // 무리비리스트 장르 싹다 뽑아 갖고 있고
-        // 장르별로 맵 돌려서 액션에 대한 무비,스릴러에 대한 무비
-        // setter에 담을 값
-        //
+        // setItems에 사용될 최종 데이터
+        // 기존의 데이터를 새로 갈아끼울 거임
+        // 장르 별로 영화를 조합한 새로운 데이터
         const newItems = []
-        // const newItems = [];
-        // 영화 순회 하면서
-        // 장르 별로 items에 movie push
-        // items : genre :{id, name}, movie(list):[{poster_path, title, id}]
-        // 영화 정보: ({poster_path, title, id, genre_ids[0]})
-
+        
         movieList.forEach(({ poster_path, title, id, genre_ids }) => {
           const movie = { poster_path, title, id };
-          // 배열 [{genre:{},movie:[{}, {}]}]
-          // movie 꺼내
-          // 아이템즈에서 영화장르 아이디로 찾아
-          let item = items.find((i) => i.genre.id == genre_ids[0]);
+          let item = newItems.find((i) => i.genre.id == genre_ids[0]);
 
           // 없으면
           if (!item) {
@@ -86,34 +64,34 @@ export default function MovieList() {
                 // 그리고 영화의 장르 아이디로 장르 리스트에서 장르 가져와서 객체에 추가
                 genre,
               };
-              // item.movie = new Array(movie);
-              // item.genre = genreList.find((g) => g.id == genre_ids[0]);
-              // 그리고 아이템즈에 추가
-              // newItems.push(item);
               newItems.push(item);
             }
           }
           // 있으면 아이템즈의 무비의 어레이에 영화 추가
           else {
             // 중복 삽입 방지
-            if (!item.movie.some((m) => m.id === id)) {
-              item.movie.push(movie);
+            // newItems는 어레이: 인덱스로 접근
+            let index = 0
+            if (!newItems.some(({ genre, movie }, idx) => {
+              index = idx
+              return movie.id === id
+            })) {
+              newItems[index].movie.push(movie);
             }
           }
-          //  state 유지( ...items)
-          // setItems(newItems)
         });
         setItems(newItems);
       }
     };
+
+    // 장르list.map(filter())
     updateItems();
     console.log(items);
-  }, []);
+  }, [genreList, movieList]);
   return (
     <div>
       <div onClick={async () => await getMovies()}>MovieList</div>
       {items.map(({ genre, movie }) => {
-        // console.log(genre.id);
 
         return (
           <div>
