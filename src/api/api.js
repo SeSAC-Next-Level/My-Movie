@@ -23,7 +23,7 @@ export const movieInstance = axios.create({
 
 /**
  * @description
- * 장르 목록
+ * 장르 코드
  * @todo store에 저장하여 최소 1회면 시행되도록 만들어야 함
  */
 export const genreInstance = axios.create({

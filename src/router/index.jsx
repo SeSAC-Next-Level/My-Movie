@@ -3,8 +3,7 @@ import RootLayout from '../pages/RootLayout';
 import Home from '../pages/Home';
 import HomeLayout from '../pages/HomeLayout';
 import NotFound from '../component/error/NotFound';
-import MovieHome from '../pages/movie/MovieHome_backup';
-import MovieList from '../pages/movie/MovieList';
+import MovieHome from '../pages/movie/MovieHome';
 import MovieDetail from '../pages/movie/MovieDetail';
 const router = createBrowserRouter([
   {
@@ -22,10 +21,10 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <MovieList />,
+            element: <MovieHome />,
           },
           {
-            path: "genre/:genreId",
+            path: "list/:genreId",
             element: <MovieDetail/>
           },
           {

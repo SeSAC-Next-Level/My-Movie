@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { act } from 'react';
 
-const initialState = [];
+const initialState = {};
 
 const genreSlice = createSlice({
   name: 'genre',
