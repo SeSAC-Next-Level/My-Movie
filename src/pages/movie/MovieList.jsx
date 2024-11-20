@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import genreApi from '../../api/genre/genreApi';
 import movieApi from '../../api/movie/movieApi';
+import imgaeApi from '../../api/image/imageApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGenre } from '../../store/slice/genreSlice';
+
+
 
 async function getGenre() {
   const response = await genreApi.getGenre();
@@ -23,6 +26,8 @@ export default function MovieList() {
   const dispatch = useDispatch();
   useEffect(() => {
     const setMovieAndGenre = async () => {
+      const imageOption = await imgaeApi.getOption('')
+      console.log(imageOption);
       if (!genreList.length) {
         const genres = await getGenre();
         // store 수정
@@ -37,6 +42,45 @@ export default function MovieList() {
     setMovieAndGenre();
   }, [genreList, movieList]);
 
+
+
+
+
+
+  /* 
+  
+  data = {
+    액션 : [영화, 영화],
+    롤맨스 : [영화, 영화],
+    대충 : [영화, 영화],
+  }
+  
+  {genre : 액션,
+    movie : [영화 리스트]
+  }
+  => 
+  [애셕, 영화리스트]
+  
+  =>
+    data = [[액션, [영화]], [로맨스, [영화]], [대충, [영화]]].map( genre, movielist => {
+      return {genre, moveillist}
+      li key=genre
+        h1 gerne
+        movielist.map()
+  
+    } 
+        
+    */
+
+
+  /* 
+  데이터를 보관하고 있을 때는 아래의 로직으로 나오는 결과가
+  데이터의 명확성과 유지보수 측면에 더 어울리지만
+  newItems를 만들어 가는 과정에서 조회하는 시간이 (cost) 가 많이 발생함
+
+  화면에 뿌리기 좋은 형태로 데이터를 조작해도 괜찮음
+  
+  */
   useEffect(() => {
     const updateItems = () => {
       if (genreList.length && movieList.length) {
@@ -67,43 +111,49 @@ export default function MovieList() {
           }
           // 있으면 아이템즈의 무비의 어레이에 영화 추가
           else {
-            // 중복 삽입 방지
-            // newItems는 어레이: 인덱스로 접근
-            let index = 0
-            if (!newItems.some(({ genre, movie }, idx) => {
-              index = idx
-              return movie.id === id
-            })) {
-            }
-            newItems[index].movie.push(movie);
+              item.movie.push(movie);
           }
         });
+        
         setItems(newItems);
       }
     };
 
 
+
     updateItems();
-    console.log(items);
+    //   console.log(items);
   }, [genreList, movieList]);
-  /*   useEffect(() => {
-      // 장르list.map(filter())
-  
-      // 장르 하나 가져와서 영화 전체 순회
-      // return 장르.id === 영화.id
-      const newItems = genreList.map((genre) => {
-        const movie = movieList.filter(m => {
-          return m.genre_ids[0] == genre.id
-        })
-  
-        return { genre, movie }
-      });
-  
-      setItems(newItems);
-      console.log(newItems);
-      // console.log(items);
-    }, [genreList, movieList]);
-   */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /** @todo 장르list.map(filter())*/
+  useEffect(() => {
+
+    // 장르 하나 가져와서 영화 전체 순회
+    // return 장르.id === 영화.id
+    // const newItems = getNewItems(genreList, movieList);
+
+    // setItems(newItems);
+  }, [genreList, movieList]);
+
   return (
     <div>
       <div onClick={async () => await getMovies()}>MovieList</div>
@@ -199,7 +249,27 @@ export default function MovieList() {
       </div> */}
     </div>
   );
-} /* 
+}
+
+
+function getNewItems(genreList, movieList) {
+  // 3. result return
+  return genreList.map((genre) => {
+
+    // 1. filter return
+    const movie = movieList.filter(m => {
+      return m.genre_ids[0] == genre.id;
+    });
+
+    // 2. map return
+    return { genre, movie };
+  });
+}
+
+/* 
+
+
+
 에러핸들링
 : 문제가 발생했어 문제상황을 알아야 하지, 문제를 어떻게 제어를 할건지, 내가 제어할 수 없는 문제라면? 시스템 문제라면
  내가 예측할 수 없는 에러, 내가 예측할 수 있는 에러, 연산 에러, 프로그램 자체 에러,

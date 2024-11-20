@@ -21,3 +21,21 @@ export const genreInstance = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/genre/movie/list`,
   headers,
 });
+
+/**
+ * @description
+ * 이미지(포스터) 찾기
+ */
+export const imageInstance = axios.create({
+  baseURL: `${import.meta.env.VITE_API_IMAGE_URL}`,
+});
+
+/**
+ * @description
+ * 이미지(포스터)에 대한 크기 옵션 목록
+ */
+export const imageOptionInstance = axios.create({
+  // baseURL: import.meta.env.VITE_API_IMAGE_OPTION,
+  baseURL: 'https://api.themoviedb.org/3/configuration',
+  headers
+});
