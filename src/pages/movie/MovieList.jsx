@@ -2,13 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import genreApi from '../../api/genre/genreApi';
 import movieApi from '../../api/movie/movieApi';
-import imgaeApi from '../../api/image/imageApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGenre } from '../../store/slice/genreSlice';
-import { concatStr } from '../../util/util';
 
 const POSTER_SIZES = 'w185';
 
+async function getMoviesByGenreId(genreMap, genreId) {
+  console.log(genreId);
+  
+  const genreName = genreMap[genreId]
+  if(!genreName) {
+    console.error('장르번호 확인')
+    return null
+  }
+  return await movieApi.getMovieByGerneId(genreId)
+}
 async function getGenre() {
   const response = await genreApi.getGenre();
 
@@ -24,6 +32,12 @@ export default function MovieList() {
   const [items, setItems] = useState(new Array());
   const genreList = useSelector((state) => state.genre);
   const dispatch = useDispatch();
+
+  const genreMap = genreList.reduce((map, g) => {
+    map[g.id] = g.name
+    return map
+  }, {})
+  
   useEffect(() => {
     const setMovieAndGenre = async () => {
       if (!genreList.length) {
@@ -67,12 +81,13 @@ export default function MovieList() {
   useEffect(() => {
     const updateItems = () => {
       const data = {}
-      // const genreMap = genreList.map(({id, name})=> {`${id}`: name})
 
-      const genreMap = {}
-      genreList.forEach(g => {
-        genreMap[g.id] = g.name
-      })
+
+      // const genreMap = {}
+      // genreList.forEach(g => {
+      //   genreMap[g.id] = g.name
+      // })
+
 
       /* 
       장르의 개수가 영화의 개수보다 적다
@@ -88,18 +103,15 @@ export default function MovieList() {
       movieList.forEach(m => {
 
         const { id, title, poster_path, genre_ids } = m
-        // const genre = genreList.find(g => g.id === genre_ids[0])
         const genreName = genreMap[genre_ids[0]]
-        
+
         const hasGenreName = data[genreName]
-        // if (!(genre.name in data)) {
-          if (!hasGenreName) {
-            data[genreName] = []
-          }
-          data[genreName].push({ id, title, poster_path })
-          
-        })
-      console.log(data);
+        if (!hasGenreName) {
+          data[genreName] = []
+        }
+        data[genreName].push({ id, title, poster_path })
+
+      })
       const newItems = Object.entries(data)
       setItems(newItems)
     };
@@ -123,7 +135,7 @@ export default function MovieList() {
         const newItems = [];
 
         movieList.forEach(({ poster_path, title, id, genre_ids }) => {
-          const movie = { poster_path, title, id };
+          const movie = { id, title, poster_path };
           let item = newItems.find((i) => i.genre.id == genre_ids[0]);
 
           // 없으면
@@ -207,7 +219,7 @@ export default function MovieList() {
   })
   return (
     <div>
-      <div onClick={async () => await getMovies()}>MovieList</div>
+      <div onClick={async () => await getMoviesByGenreId(genreMap, 28)}>MovieList</div>
       {rendedItem}
 
     </div>
