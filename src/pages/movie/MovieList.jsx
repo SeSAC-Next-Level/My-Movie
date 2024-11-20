@@ -5,8 +5,9 @@ import movieApi from '../../api/movie/movieApi';
 import imgaeApi from '../../api/image/imageApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGenre } from '../../store/slice/genreSlice';
+import { concatStr } from '../../util/util';
 
-
+const POSTER_SIZES = 'w185';
 
 async function getGenre() {
   const response = await genreApi.getGenre();
@@ -16,8 +17,7 @@ async function getGenre() {
 }
 
 async function getMovies() {
-  const movies = await movieApi.getNowPlaying();
-  return movies;
+  return await movieApi.getNowPlaying();
 }
 export default function MovieList() {
   const [movieList, setMovieList] = useState([]);
@@ -26,8 +26,6 @@ export default function MovieList() {
   const dispatch = useDispatch();
   useEffect(() => {
     const setMovieAndGenre = async () => {
-      const imageOption = await imgaeApi.getOption('')
-      console.log(imageOption);
       if (!genreList.length) {
         const genres = await getGenre();
         // store 수정
@@ -41,11 +39,6 @@ export default function MovieList() {
     //실행
     setMovieAndGenre();
   }, [genreList, movieList]);
-
-
-
-
-
 
   /* 
   
@@ -71,7 +64,47 @@ export default function MovieList() {
     } 
         
     */
+  useEffect(() => {
+    const updateItems = () => {
+      const data = {}
+      // const genreMap = genreList.map(({id, name})=> {`${id}`: name})
 
+      const genreMap = {}
+      genreList.forEach(g => {
+        genreMap[g.id] = g.name
+      })
+
+      /* 
+      장르의 개수가 영화의 개수보다 적다
+      영화와 장르 중 영화를 기준으로 장르 순회 하는 것이 순서가 더 적다
+
+      영화를 순회
+      const {id, name}장르.find(장르.id === 영화.장르_ids[0])
+      data[name] = [{영화}, {영화}] 
+
+
+      
+      */
+      movieList.forEach(m => {
+
+        const { id, title, poster_path, genre_ids } = m
+        // const genre = genreList.find(g => g.id === genre_ids[0])
+        const genreName = genreMap[genre_ids[0]]
+        
+        const hasGenreName = data[genreName]
+        // if (!(genre.name in data)) {
+          if (!hasGenreName) {
+            data[genreName] = []
+          }
+          data[genreName].push({ id, title, poster_path })
+          
+        })
+      console.log(data);
+      const newItems = Object.entries(data)
+      setItems(newItems)
+    };
+    updateItems();
+  }, [genreList, movieList]);
 
   /* 
   데이터를 보관하고 있을 때는 아래의 로직으로 나오는 결과가
@@ -87,7 +120,7 @@ export default function MovieList() {
         // setItems에 사용될 최종 데이터
         // 기존의 데이터를 새로 갈아끼울 거임
         // 장르 별로 영화를 조합한 새로운 데이터
-        const newItems = []
+        const newItems = [];
 
         movieList.forEach(({ poster_path, title, id, genre_ids }) => {
           const movie = { poster_path, title, id };
@@ -99,165 +132,135 @@ export default function MovieList() {
             // 장르가 있는 영화만 사용하기 위함
             if (genre) {
               // 객체 하나 만들어서
+              // 무비에 어레이 만들고 영화 넣어
+              // 그리고 영화의 장르 아이디로 장르 리스트에서 장르 가져와서 객체에 추가
               item = {
-                // 무비에 어레이 만들고 영화 넣어
                 movie: [movie],
-                // 그리고 영화의 장르 아이디로 장르 리스트에서 장르 가져와서 객체에 추가
                 genre,
               };
               newItems.push(item);
             }
-
           }
           // 있으면 아이템즈의 무비의 어레이에 영화 추가
           else {
-              item.movie.push(movie);
+            item.movie.push(movie);
           }
         });
-        
+
         setItems(newItems);
       }
     };
 
-
-
-    updateItems();
+    // updateItems();
     //   console.log(items);
   }, [genreList, movieList]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /** @todo 장르list.map(filter())*/
   useEffect(() => {
-
     // 장르 하나 가져와서 영화 전체 순회
     // return 장르.id === 영화.id
-    // const newItems = getNewItems(genreList, movieList);
-
-    // setItems(newItems);
+    // setItems(getNewItems(genreList, movieList));
   }, [genreList, movieList]);
+  // const rendedItem = oldVersion(items)
+  const rendedItem = items.map(item => {
+    const [genre, ...movie] = item
 
+    return (<div key={genre}>
+      <div style={{ display: 'flex' }}>
+        <h3>{genre}</h3>
+        <div>
+          <b>
+            <Link to={`list?genre=${genre}`}>더보기</Link>
+          </b>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        {movie[0].map((m) => {
+          const { poster_path, title, id } = m
+          // console.log(m);
+          const imgUrl = [
+            import.meta.env.VITE_API_IMAGE_URL,
+            POSTER_SIZES,
+            poster_path,
+          ].join('/');
+
+          return (
+            <div
+              key={id}
+              style={{ boxSizing: 'content-box', margin: '10px' }}
+            >
+              <div>{title}</div>
+              <Link to={id}>
+                <div>
+                  <img src={imgUrl} alt="" />
+                </div>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
+    </div>)
+
+
+
+  })
   return (
     <div>
       <div onClick={async () => await getMovies()}>MovieList</div>
-      {items.map(({ genre, movie }) => {
-        if (!movie.length) return null
-        return (
-          <div key={genre.id}>
-            <div style={{ display: 'flex' }}>
-              <h3>{genre.name}</h3>
-              <div>
-                <b>
-                  <Link to={`list?genre=${genre.id}`}>더보기</Link>
-                </b>
-              </div>
-            </div>
+      {rendedItem}
 
-            <div style={{ display: 'flex' }}>
-              {movie.map(({ poster_path, title, id }) => {
-                return (
-                  <div key={id} style={{ boxSizing: 'content-box', margin: '10px' }}>
-                    <div>{title}</div>
-                    <Link to={id}>
-                      <div>
-                        <img src={`${poster_path}`} alt="" />
-                      </div>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-      {/* <div>
-        <div style={{ display: 'flex' }}>
-          <h3>SF</h3>
-          <div>
-            <b>
-              <Link to="list?genre=sf">더보기</Link>
-            </b>
-          </div>
-        </div>
-        <div style={{ display: 'flex' }}>
-          <div style={{ boxSizing: 'content-box', margin: '10px' }}>
-            <div>제목 1</div>
-            <div>
-              <img
-                src="https://placehold.co/100x200/000000/FFFFFF/png"
-                alt=""
-              />
-            </div>
-          </div>
-          <div style={{ boxSizing: 'content-box', margin: '10px' }}>
-            <div>제목 2</div>
-            <div>
-              <img
-                src="https://placehold.co/100x200/000000/FFFFFF/png"
-                alt=""
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div style={{ display: 'flex' }}>
-          <h3>로맨스</h3>
-          <div>
-            <b>
-              <Link to="list?genre=romence">더보기</Link>
-            </b>
-          </div>
-        </div>
-        <div style={{ display: 'flex' }}>
-          <div style={{ boxSizing: 'content-box', margin: '10px' }}>
-            <div>제목 3</div>
-            <div>
-              <img
-                src="https://placehold.co/100x200/000000/FFFFFF/png"
-                alt=""
-              />
-            </div>
-          </div>
-          <div style={{ boxSizing: 'content-box', margin: '10px' }}>
-            <div>제목 4</div>
-            <div>
-              <img
-                src="https://placehold.co/100x200/000000/FFFFFF/png"
-                alt=""
-              />
-            </div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }
 
+function oldVersion(items) {
+  return items.map(({ genre, movie }) => {
+    // if (!movie.length) return null;// 두번째 방법: map을 썼을 때 
+    return (
+      <div key={genre.id}>
+        <div style={{ display: 'flex' }}>
+          <h3>{genre.name}</h3>
+          <div>
+            <b>
+              <Link to={`list?genre=${genre.id}`}>더보기</Link>
+            </b>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex' }}>
+          {movie.map(({ poster_path, title, id }) => {
+            const imgUrl = [
+              import.meta.env.VITE_API_IMAGE_URL,
+              POSTER_SIZES,
+              poster_path,
+            ].join('/');
+
+            return (
+              <div
+                key={id}
+                style={{ boxSizing: 'content-box', margin: '10px' }}
+              >
+                <div>{title}</div>
+                <Link to={id}>
+                  <div>
+                    <img src={imgUrl} alt="" />
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  });
+}
 
 function getNewItems(genreList, movieList) {
   // 3. result return
   return genreList.map((genre) => {
-
     // 1. filter return
-    const movie = movieList.filter(m => {
+    const movie = movieList.filter((m) => {
       return m.genre_ids[0] == genre.id;
     });
 
