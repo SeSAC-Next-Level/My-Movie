@@ -16,14 +16,12 @@ export default function MovieDetail() {
       const movieData = await movieApi.getMovie(id)
       const reviewsData = await movieApi.getReviewByMovieId(id)
       reviewsData.results.sort((d1, d2) => new Date(d2.created_at) - new Date(d1.created_at))
-      
+
       setMovie(movieData)
       setReviews(reviewsData.results)
     }
     getMovie(movieId)
   }, []) // 1회 시행
-  console.log(movie);
-  console.log(reviews);
 
   const { title, poster_path, vote_average, release_date, runtime, genres, overview } = movie
   const imgUrl = [
@@ -53,18 +51,18 @@ export default function MovieDetail() {
       <div>
         <h3>Review</h3>
         {/* 없으면 nothing */}
-        <div>{Array.isArray(reviews) && reviews.map(r => {
-          console.log(123123);
-          
-          return (
-            <details key={r.id}>
-              <summary>{r.author}</summary>
-              <p style={{whiteSpace: 'pre-line'}}>
-                {r.content}
-              </p>
-            </details>
-          )
-        })}</div>
+        <div>{Array.isArray(reviews) && (
+          !reviews.length ? <div>There is No Review</div> :
+            reviews.map(r => {
+              return (
+                <details key={r.id}>
+                  <summary>{r.author}</summary>
+                  <p style={{ whiteSpace: 'pre-line' }}>
+                    {r.content}
+                  </p>
+                </details>
+              )
+            }))}</div>
       </div>
 
     </div>
