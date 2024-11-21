@@ -6,6 +6,7 @@ import NotFound from '../component/error/NotFound';
 import MovieHome from '../pages/movie/MovieHome';
 import MovieDetail from '../pages/movie/MovieDetail';
 import MovieList from '../pages/movie/MovieList';
+import Login from '../pages/login/Login';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      }, 
+      {
+        path: '/login',
+        element: <Login />,
       },
       {
         path: '/movie',
@@ -24,13 +29,14 @@ const router = createBrowserRouter([
             index: true,
             element: <MovieHome />,
           },
+
           {
             path: "list",
-            element: <MovieList/>
+            element: <MovieList />
           },
           {
             path: ":movieId",
-            element: <MovieDetail/>
+            element: <MovieDetail />
           }
         ],
       },
