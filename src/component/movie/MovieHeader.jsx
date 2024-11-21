@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import MoreBtn from '../common/MoreBtn';
+import LinkBtn from '../common/LinkBtn';
 /**
  * @param {object} props 
  * @param {string} props.genreId 영화 장르 id
@@ -14,12 +14,14 @@ export default function MovieHeader({ genreId, more }) {
     genre: genreId
   })
 
+  const link = `list?${queryString}`
+
   const genreMap = useSelector((state) => state.genre);
   return (
     <div style={{ display: 'flex' }}>
       <h3>{genreMap[genreId]}</h3>
       {more &&
-        <MoreBtn queryString={queryString} />}
+        <LinkBtn link={link} >더보기</LinkBtn>}
     </div>
   )
 }

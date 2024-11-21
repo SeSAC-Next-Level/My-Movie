@@ -10,6 +10,7 @@ const movieApi = {
     const response = await instance.get(url);
     return response.data;
   },
+  // getMoi
 };
 
 export default movieApi;

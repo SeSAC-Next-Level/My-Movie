@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-export default function MoreBtn({ queryString }) {
+export default function LinkBtn({ link, children }) {
   return (
     <div>
       <b>
-        <Link to={`list?${queryString}`}>더보기</Link>
+        <Link to={link}>{children}</Link>
       </b>
     </div>
   )
