@@ -1,7 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 export default function MovieBody({ movie }) {
-  
+  const navigate = useNavigate()
+
   const POSTER_SIZES = 'w185';
 
   const { id, title, poster_path } = movie;
@@ -16,7 +17,7 @@ export default function MovieBody({ movie }) {
     <div
       style={{ boxSizing: 'content-box', margin: '10px' }}
     >
-      <div>{title}</div>
+      <div onClick={() => navigate(`${id}`)}>{title}</div>
       <Link to={`${id}`}>
         <div>
           <img src={imgUrl} alt={title} />

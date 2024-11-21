@@ -77,22 +77,19 @@ export default function MovieHome() {
 
   return (
     <div>
-      <div onClick={
-        async () => {
-          const result = await getMoviesByGenreId(genreMap, 28)
-          console.log(result);
-        }
-      }>
+      <div >
         MovieList
       </div>
       {items.map((item) => {
         const [genreId, ...movie] = item;
-        
+
         return (
           <div key={genreId}>
             <MovieHeader genreId={genreId} />
             <div style={{ display: 'flex' }}>
+
               {movie[0].map((m) => <MovieBody key={m.id} movie={m} />)}
+
             </div>
           </div>
         );
