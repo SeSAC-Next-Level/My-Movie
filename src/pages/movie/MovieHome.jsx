@@ -85,8 +85,8 @@ export default function MovieHome() {
 
         return (
           <div key={genreId}>
-            <MovieHeader genreId={genreId} />
-            <div style={{ display: 'flex' }}>
+            <MovieHeader genreId={genreId} more={true} />
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
 
               {movie[0].map((m) => <MovieBody key={m.id} movie={m} />)}
 

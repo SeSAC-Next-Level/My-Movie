@@ -17,12 +17,19 @@ export default function MovieList() {
       const newItems = null
       const data = await movieApi.getMovieByGerneId(id)
       const results = data.results
-      results.sort((m1,m2)=> m2.release_date - m1.release_date)
+      results.sort((m1, m2) => m2.release_date - m1.release_date)
       console.log(results);
       setItems(results)
     }
     makeItems(genreId)
   }, []) // 한번만 시행
 
-  return <div>haha</div>
+  return <div>
+    <MovieHeader genreId={genreId} more={false} />
+
+    {/* grid가 더 이쁠 듯 */}
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+      {items.map(m => <MovieBody key={m.id} movie={m} />)}
+    </div>
+  </div>
 }

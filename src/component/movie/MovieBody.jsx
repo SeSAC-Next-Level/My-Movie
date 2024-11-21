@@ -17,12 +17,12 @@ export default function MovieBody({ movie }) {
     <div
       style={{ boxSizing: 'content-box', margin: '10px' }}
     >
-      <div onClick={() => navigate(`${id}`)}>{title}</div>
-      <Link to={`${id}`}>
+      <Link to={`/movie/${id}`}>
         <div>
           <img src={imgUrl} alt={title} />
         </div>
       </Link>
+      <div onClick={() => navigate(`/movie/${id}`)}>{title}</div>
     </div>
   )
 }
