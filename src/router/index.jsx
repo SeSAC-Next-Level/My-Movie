@@ -7,6 +7,7 @@ import MovieHome from '../pages/movie/MovieHome';
 import MovieDetail from '../pages/movie/MovieDetail';
 import MovieList from '../pages/movie/MovieList';
 import Login from '../pages/login/Login';
+import Logout from '../pages/login/Logout';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -16,10 +17,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
-      }, 
+      },
       {
         path: '/login',
         element: <Login />,
+      }, 
+      {
+        path: '/logout',
+        element: <Logout />,
       },
       {
         path: '/movie',

@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import sampleReducer from './slice/sampleSlice';
+import usersReducer from './slice/usersSlice';
 import gerneReducer from './slice/genreSlice';
 
 export const store = configureStore({
   reducer: {
-    sample: sampleReducer,
+    users: usersReducer,
     genre: gerneReducer,
   },
 });

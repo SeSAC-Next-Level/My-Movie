@@ -14,7 +14,6 @@ export default function MovieList() {
   const genreId = params.get('genre');
   useEffect(() => {
     async function makeItems(id) {
-      const newItems = null
       const data = await movieApi.getMovieByGerneId(id)
       const results = data.results
       results.sort((m1, m2) => m2.release_date - m1.release_date)

@@ -21,7 +21,7 @@ export default function MovieHeader({ genreId, more }) {
     <div style={{ display: 'flex' }}>
       <h3>{genreMap[genreId]}</h3>
       {more &&
-        <LinkBtn link={link} >더보기</LinkBtn>}
+        <LinkBtn link={link} >More</LinkBtn>}
     </div>
   )
 }
