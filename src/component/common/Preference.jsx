@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom'
 export default function Preference() {
   const { movieId } = useParams()
   let likeList = localStorage.getItem('likeList').split(',')
+
+  // '123,123,123'
   const [isLike, setLike] = useState(likeList.some((mId) => mId === movieId))
 
 

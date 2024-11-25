@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />,
-      }, 
+      },
       {
         path: '/logout',
         element: <Logout />,
@@ -34,7 +34,6 @@ const router = createBrowserRouter([
             index: true,
             element: <MovieHome />,
           },
-
           {
             path: "list",
             element: <MovieList />

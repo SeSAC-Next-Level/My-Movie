@@ -40,14 +40,17 @@ export default function MovieHome() {
       if (!Object.keys(genreMap).length) {
         const genres = await getGenre();
 
-        const gMap = genres.reduce((map, g) => {
-          map[g.id] = g.name;
-          return map;
-        }, {});
+        const gMap = genres.reduce(
+          (map, g) => {
+            map[g.id] = g.name;
+            return map;
+          }, {}
+        );
 
         // store 업데이트
         dispatch(setGenre(gMap));
       }
+
       if (!movieList.length) {
         const movies = await getMovies();
         setMovieList(movies.results);
@@ -81,7 +84,7 @@ export default function MovieHome() {
         MovieList
       </div>
       {items.map((item) => {
-        const [genreId, ...movie] = item;
+        const [genreId, ...movie] = item; // [genderId , [movie1, movie2, movie3]]
 
         return (
           <div key={genreId}>
