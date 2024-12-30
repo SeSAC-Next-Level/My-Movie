@@ -133,7 +133,7 @@ public abstract class VendingMachine {
         return null;
     }
 
-    private Product<ProductType> findByName(String name) {
+    public Product<ProductType> findByName(String name) {
 
         for (List<Product<ProductType>> lst : productMap.values()) {
             for (Product<ProductType> product : lst) {
@@ -158,8 +158,4 @@ public abstract class VendingMachine {
     // V.add(product)
 
 
-    private boolean isContains(String name) {
-        Product<ProductType> product = findByName(name);
-        return product != null;
-    }
 }

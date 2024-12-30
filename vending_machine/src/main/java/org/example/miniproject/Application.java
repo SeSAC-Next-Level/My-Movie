@@ -94,17 +94,42 @@ public class Application {
             } else if (mode.equals("2")) {
                 // 관리자 모드
                 Manager manager = new Manager();
+                String command = sc.next();
 
-                // 재고 확인
-                manager.showProducts();
-                // 상품 가격 설정
-                // 이름 입력
-                // 변경 가격 입력
+                boolean managerFlag = true;
+                while (managerFlag) {
+                    System.out.println("1: 재고확인, 2: 상품 관리, 3: 매출 확인, 5: 종료");
+                    switch (command) {
+                        case "1" -> {
+                            // 재고 확인
+                            manager.showProducts();
 
-                // 재고 추가
-//                bvm.updateProduct();
-                // 매출 확인
-                manager.showRevenue();
+                        }
+                        case "2" -> {
+
+                            // 상품 가격 설정
+                            manager.showProducts();
+                            // 이름 입력
+                            String productName = sc.next();
+                            // 변경 가격 입력
+                            String productPrice = sc.next();
+                            if (productPrice.matches("\\d+")) {
+                                manager.updateProductPrice(productName, Integer.parseInt(productPrice));
+                            }
+                        }
+                            // 재고 추가
+                        case "3"->{
+
+                            // 매출 확인
+                            manager.showRevenue();
+                        }
+                        case "4" -> {
+
+                            // 종료
+                            managerFlag = false;
+                        }
+                    }
+                }
             } else if (mode.equals("3")) {
                 break;
             } else {
