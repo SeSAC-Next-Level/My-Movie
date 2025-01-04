@@ -85,11 +85,13 @@ public class Application {
                     }
                     normalUser.setPayment(payment);
                     normalUser.inputPayment(bvm);
-                    bvm.displayAvailablePurchase();
+                    while (payment.getCash() > 0) {
+                        bvm.displayAvailablePurchase();
 
-                    System.out.println("구매 희망하는 상품 이름을 입력 해주세요");
-                    String productName = sc.next();
-                    bvm.pay(productName);
+                        System.out.println("구매 희망하는 상품 이름을 입력 해주세요");
+                        String productName = sc.next();
+                        bvm.pay(productName);
+                    }
                 }
             } else if (mode.equals("2")) {
                 // 관리자 모드
