@@ -5,7 +5,7 @@ const Authorization = `Bearer ${API_KEY}`;
 const headers = { Authorization };
 
 /**
- * @description 영화 관련
+ * @description 베이스 URL
  */
 export const instance = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
